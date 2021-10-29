@@ -9553,39 +9553,31 @@ The sign
 
 import random
 
-ngrams = []
+ngrams = {}
+d = 4
 
 
+for i in range(len(text)-d-1):
+  stem = text[i:i+d]
+  twig = text[i+d]
 
-for b in range(len(text)-4):
-  ngrams.append(text[b:b+4])
+  if (stem not in ngrams.keys()):
+    ngrams[stem] = [twig]
+  else:
+    ngrams[stem].append(twig)
 
-
-random.shuffle(ngrams)
-seed = random.choice(ngrams)
-
+seed = random.choice(list(ngrams.keys()))
 new_text = seed
 
+for i in range(500000):
+  root = new_text[-d:]
+  if(root in ngrams.keys() and len(ngrams[root]) > 0):
+    pick = random.randrange(len(ngrams[root]))
+    new_text += ngrams[root][pick]
+    ngrams[root].pop(pick)
 
-for i in range(1000): 
-  for n in ngrams:
-    if (n[:3] == new_text[-3:]):
-      new_text += n[-1]
-      ngrams.remove(n)
+# / new_text
 
-print(new_text)
-
-
-
-
-import markovify
-
-
-
-text_model = markovify.Text(text)
-
-for i in range(50000):
-  print(text_model.make_sentence())
   
   
 rendered_html.write_pdf('/content/TMoTYB.pdf', stylesheets=[css],font_config=font_config) 
